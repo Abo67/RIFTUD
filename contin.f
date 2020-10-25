@@ -1,0 +1,120 @@
+      SUBROUTINE CONTIN(XEST,YCALC,IND,JZ,YGIV,XDEL)
+      IMPLICIT NONE
+C
+C--CONTIN CALCULATES AN ESTIMATE OF THE RELATIVE FLOW VELOCITY
+C--FOR USE IN THE VELOCITY GRADIENT EQUATION
+C
+      real XEST,YCALC,YGIV,XDEL
+      integer IND,JZ
+!
+      real APA,ACB2
+      real BPB
+      real CPC
+      real DISCR
+      real XOSHFT,XORIG
+      SAVE XORIG,XOSHFT ! aldo
+      integer NCALL
+      SAVE NCALL ! aldo
+      real X,Y
+      DIMENSION X(3),Y(3)
+      SAVE X,Y ! aldo
+!
+!     write(6,*)'Inside CONTIN: NCALL = ',NCALL,' IND = ',IND,
+!    &'JZ = ',JZ
+      NCALL = NCALL+1
+      IF (IND.NE.1.AND.NCALL.GT.100) GO TO 160
+      GO TO (10,30,40,50,60,110,150),IND
+C--FIRST CALL
+   10 NCALL = 1
+      XORIG = XEST
+      IF (YCALC.GT.YGIV.AND.JZ.EQ.1) GO TO 20
+      IND = 2
+      Y(1) = YCALC
+      X(1) = 0.
+      XEST = XEST+XDEL 
+      RETURN
+   20 IND = 3
+      Y(3) = YCALC
+      X(3) = 0.
+      XEST = XEST-XDEL 
+      RETURN
+C--SECOND CALL
+   30 IND = 4
+      Y(2) = YCALC
+      X(2) = XEST-XORIG 
+      XEST = XEST+XDEL 
+      RETURN
+   40 IND = 5
+      Y(2) = YCALC
+      X(2) = XEST-XORIG 
+      XEST = XEST-XDEL 
+      RETURN
+C--THIRD OR LATER CALL - FIND SUBSONIC OR SUPERSONIC SOLUTION
+   50 Y(3) = YCALC
+      X(3) = XEST-XORIG 
+      GO TO 70
+   60 Y(1) = YCALC
+      X(1) = XEST-XORIG
+   70 IF (YGIV.LT.AMIN1(Y(1),Y(2),Y(3))) GO TO (120,130),JZ
+   80 IND = 6
+      CALL PABC(X,Y,APA,BPB,CPC)
+      DISCR = BPB**2-4.*APA*(CPC-YGIV)
+      IF (DISCR.LT.0.) GO TO 140
+      IF (ABS(400.*APA*(CPC-YGIV)).LE.BPB**2) GO TO 90
+      XEST = -BPB-SIGN(SQRT(DISCR),APA)
+      IF (JZ.EQ.1.AND.APA.GT.0..AND.Y(3).GT.Y(1)) XEST = -BPB+
+     1SQRT(DISCR)
+      IF (JZ.EQ.2.AND.APA.LT.0.) XEST = -BPB-SQRT(DISCR)
+      XEST = XEST/2./APA
+      GO TO 100
+   90 IF (JZ.EQ.2.AND.BPB.GT.0.) GO TO 130
+      ACB2 = APA/BPB*(CPC-YGIV)/BPB
+      IF (ABS(ACB2).LE.1.E-8) ACB2=0.
+      XEST = -(CPC-YGIV)/BPB*(1.+ACB2+2.*ACB2**2)
+  100 IF (XEST.GT.X(3)) GO TO 130
+      IF (XEST.LT.X(1)) GO TO 120
+      XEST = XEST+XORIG
+      RETURN
+C--FOURTH OR LATER CALL - NOT CHOKED
+ 110  IF(XEST-XORIG.GT.X(3)) GO TO 130
+      IF(XEST-XORIG.LT.X(1)) GO TO 120
+      Y(2) = YCALC
+      X(2) = XEST-XORIG
+      GO TO 70
+C--THIRD OR LATER CALL - SOLUTION EXISTS,
+C--BUT RIGHT OR LEFT SHIFT REQUIRED
+ 120  IND = 5
+C--LEFT SHIFT
+      XEST = X(1)-XDEL+XORIG
+      XOSHFT = XEST-XORIG
+      XORIG = XEST
+      Y(3) = Y(2)
+      X(3) = X(2)-XOSHFT
+      Y(2) = Y(1)
+      X(2) = X(1)-XOSHFT
+      RETURN
+ 130  IND = 4
+C--RIGHT SHIFT
+      XEST = X(3)+XDEL+XORIG
+      XOSHFT = XEST-XORIG
+      XORIG = XEST
+      Y(1) = Y(2)
+      X(1) = X(2)-XOSHFT
+      Y(2) = Y(3) 
+      X(2) = X(3)-XOSHFT
+      RETURN
+C--THIRD OR LATER CALL - APPEARS TO BE CHOKED
+ 140  XEST = -BPB/2./APA
+      IND = 7
+      IF(XEST.LT.X(1)) GO TO 120
+      IF(XEST.GT.X(3)) GO TO 130
+      XEST = XEST+XORIG
+      RETURN
+C--FOURTH OR LATER CALL - PROBABLY CHOKED
+ 150  IF (YCALC.GE.YGIV) GO TO 110
+      IND = 10
+      RETURN
+C--NO SOLUTION FOUND IN 100 ITERATIONS 
+ 160  IND = 11
+      RETURN
+      END
