@@ -2,25 +2,25 @@
       IMPLICIT NONE
       REAL MU
 !
-      real A,ALPH1,ALPH0,ALUNC,AA,A3A2S,A3A2R,A2,AR,AS
-      real BET2M,BB,BWSR
-      real CR,CS,CHRDR
-      real D0,D1,D1A,D2M,D
-      real EN,ER,ES,ELOCS,ELOSS,ELOSR,E,EWSR
-      real GAM
-      real HS,HR,H
+      REAL A,ALPH1,ALPH0,ALUNC,AA,A3A2S,A3A2R,A2,AR,AS
+      REAL BET2M,BB,BWSR
+      REAL CR,CS,CHRDR
+      REAL D0,D1,D1A,D2M,D
+      REAL EN,ER,ES,ELOCS,ELOSS,ELOSR,E,EWSR
+      REAL GAM
+      REAL HS,HR,H
       INTEGER J
       INTEGER K,K2
       INTEGER NSTAR
-      real PI
-      real REFR,RER,RH2RT2,REFS,RES
-      real SIGS,STAR,SRH1,SRH2,SRH,SRS
-      real TOSR,TOSS
-      real VOVCR1
-      real X
-      real Y,Y2,YC
-      real W,WOWCRM
-      real SIMPS1
+      REAL PI
+      REAL REFR,RER,RH2RT2,REFS,RES
+      REAL SIGS,STAR,SRH1,SRH2,SRH,SRS
+      REAL TOSR,TOSS
+      REAL VOVCR1
+      REAL X
+      REAL Y,Y2,YC
+      REAL W,WOWCRM
+      REAL SIMPS1
       external SIMPS1
 !
       COMMON/EFF/GAM,VOVCR1,W,PI,STAR,MU,D1,ALPH1,NSTAR,ALPH0,ALUNC,SIGS 
