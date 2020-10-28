@@ -530,6 +530,7 @@ C
       WRITE(6,FMT="('Aungier ALPHA1 should be ',F7.4,' is ',F7.4)")
      &90.-(10.8+14.2*SSPD*SSPD),ALPH1*180./3.141593
 caldo
+      GOTO 2
 caldo
       call draw(0.5*D1A,RT2R1A*0.5*D1A,HS,0.5*D2M,RH2RT2*RT2R1A*0.5*D1A,
      &D1*.5,D0*.5,elr)
