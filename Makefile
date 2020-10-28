@@ -12,7 +12,7 @@ INSTALL	      = cp
 
 LD	      = $(FC)
 
-LDFLAGS	      =
+LDFLAGS	      = -lslatec  -llapack -lCoolProp
 
 LIBS	      =
 
@@ -37,7 +37,7 @@ PRINT	      = pr
 
 PROG1       = riftud-pg
 
-PROG2       = riftud-gg
+PROG2       = riftud-rg
 
 SHELL	      = /bin/sh
 
@@ -61,7 +61,7 @@ $(PROG1):      	$(OBJS1) $(LIBS)
 
 $(PROG2):      	$(OBJS2) $(LIBS)
 		@echo "Linking $(PROG2) ..."
-		@$(LD) $(LDFLAGS) $(OBJS2) $(LIBS) -o $(PROG2) -lslatec  -llapack -lCoolProp
+		@$(LD) $(LDFLAGS) $(OBJS2) $(LIBS) -o $(PROG2)
 		@echo "done"
 
 clean:;		@rm -f $(OBJS1) $(OBJS2) core
@@ -74,11 +74,11 @@ echo:;		@echo $(HDRS) $(SRCS)
 
 index:;		@ctags -wx $(HDRS) $(SRCS)
 
-install:	$(PROG1)
-		@echo Installing $(PROG1) in $(DEST)
-		@-strip $(PROG1)
+install:	$(PROG1) $(PROG2)
+		@echo Installing $(PROG1) and $(PROG2) in $(DEST)
+		@-strip $(PROG1) $(PROG2)
 		@if [ $(DEST) != . ]; then \
-		(rm -f $(DEST)/$(PROGRAM); $(INSTALL) $(PROG1) $(DEST)); fi
+		(rm -f $(DEST)/$(PROG1) $(DEST)/$(PROG2); $(INSTALL) $(PROG1) $(PROG2) $(DEST)); fi
 
 print:;		@$(PRINT) $(HDRS) $(SRCS)
 
