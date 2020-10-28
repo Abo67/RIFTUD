@@ -8,7 +8,7 @@ EXTHDRS	      =
 
 HDRS	      =
 
-INSTALL	      = cp
+INSTALL	      = cp -v
 
 LD	      = $(FC)
 
@@ -78,7 +78,7 @@ install:	$(PROG1) $(PROG2)
 		@echo Installing $(PROG1) and $(PROG2) in $(DEST)
 		@-strip $(PROG1) $(PROG2)
 		@if [ $(DEST) != . ]; then \
-		(rm -f $(DEST)/$(PROG1) $(DEST)/$(PROG2); $(INSTALL) $(PROG1) $(PROG2) $(DEST)); fi
+		(rm -vf $(DEST)/$(PROG1) $(DEST)/$(PROG2); $(INSTALL) $(PROG1) $(PROG2) $(DEST)); fi
 
 print:;		@$(PRINT) $(HDRS) $(SRCS)
 
