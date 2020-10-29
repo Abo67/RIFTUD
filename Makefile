@@ -1,6 +1,6 @@
 FC            = gfortran	
 
-FFLAGS	      = -g
+FFLAGS	      = -g -Wall
 
 DEST	      = $(HOME)/bin
 
